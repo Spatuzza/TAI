@@ -1,12 +1,54 @@
-
-//hola
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
+int jugador_1[11] ={0};
+int jugador_2[11] ={0};
+bool serv = true;
 int dice[5] = {0};
 int jugadas;
+
+int _1_6_noserv(){
+    int cont[6] = {0};
+    if(serv == false){
+        for(int i = 0; i<= 4; i++){
+            if(dice[i] == 1){
+                cont[0] = cont[0] + 1;
+            }
+            else if(dice[i] == 2){
+                cont[1] = cont[1] + 1;
+            }
+            else if(dice[i] == 3){
+                cont[2] = cont[2] + 1;
+            }
+            else if(dice[i] == 4){
+                cont[3] = cont[3] + 1;
+            }
+            else if(dice[i] == 5){
+                cont[4] = cont[4] + 1;
+            }
+            else if(dice[i] == 6){
+                cont[5] = cont[5] + 1;
+            }
+        }
+        for(int i = 0; i<= 5; i++){
+            if(cont[i]>1){
+                printf("\ntenes un %d , deseas anotarlo?",i+1);
+            }
+        }
+    }
+}
+
+int control_serv(){
+    for (int i = 0; i < 4; i++){
+        if(dice[i] != 0){
+            serv = false;
+            break;
+        }
+    }
+}
 
 void efect() {
     int i;
@@ -20,6 +62,7 @@ void efect() {
     printf("\r");
     
 }
+
 int gen_dice(){
     printf("los dados sacados son:\n");
     printf("A   B   C   D   E  \n");
@@ -28,7 +71,7 @@ int gen_dice(){
     printf("%d   %d   %d   %d   %d",dice[0],dice[1],dice[2],dice[3],dice[4]);
 }
 
-void reval_dice(){
+void reval_dice_0(){
     time_t t;
     srand((unsigned) time(&t));
     for(int i = 0; i <= 5; i++){
@@ -53,7 +96,7 @@ int selec(){
     char s;
     char sel;
     int cant_d;
-    int exit = 0;
+    int exit= 0;
     jugadas = 0;
     while(jugadas != 2)
     {
@@ -86,7 +129,8 @@ int selec(){
                 dice[4] = 0;
                 break;
             }
-            reval_dice();
+            control_serv();
+            reval_dice_0();
             cant_d++;
             if(sel == 'X'){
                 exit = 1;
@@ -100,6 +144,7 @@ int selec(){
             printf("si desea continuar presione enter si no presione cualquier otra tecla....\n\n");
             s = getchar();
             if(s != '\n'){
+                gen_dice();
                 break;
             }else{
                 system("cls");
@@ -113,4 +158,5 @@ int main(){
     val_dice();
     gen_dice();
     selec();
+    _1_6_noserv();
 }
