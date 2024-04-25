@@ -11,20 +11,36 @@ void efect() {
     srand(time(NULL));
     // Simulando el efecto de la ruleta
     for(i = 0; i < 20; i++) {
-        printf("%d\r", (rand() % 5) + 1);
+        printf("%d   %d   %d   %d   %d\r", (rand() % 5) + 1, (rand() % 5) + 1, (rand() % 5) + 1, (rand() % 5) + 1, (rand() % 5) + 1, (rand() % 5) + 1);
         fflush(stdout);
         usleep(100000);
     }
     printf("\r");
     
 }
+int gen_dice(){
+    printf("los dados sacados son:\n");
+    printf("A   B   C   D   E  \n");
+    efect();
+    printf("\r");
+    printf("%d   %d   %d   %d   %d",dice[0],dice[1],dice[2],dice[3],dice[4]);
+}
 
-void val_dice()
+void reval_dice(){
+    time_t t;
+    srand((unsigned) time(&t));
+    for(int i = 0; i <= 5; i++){
+        if(dice[i] == 0){
+            dice[i] = (rand() % 6) + 1;
+    }
+    }
+}
+
+int val_dice()
 {
     time_t t;
     srand((unsigned) time(&t));
-    for(int i = 0; i < 5; i++)   
-    {
+    for(int i = 0; i < 5; i++){
         dice[i] = (rand() % 6) + 1;
     }
 }
@@ -32,77 +48,67 @@ void val_dice()
 int selec(){
     time_t t;
     srand((unsigned) time(&t));
-    int ant = 1;
-    int sel = 0;
-    int sel_d = 0;
+    char s;
+    char sel;
+    int cant_d;
+    int exit = 0;
     jugadas = 0;
-    // Solicitamos al usuario que ingrese un número en el rango [1, 5]
-    while(jugadas <= 3)
+    while(jugadas != 2)
     {
-        printf("\nSu numeros de jugadas restantes es: %d \nElija cuantos dados desea tirar otra vez: \n (si no desea hacer cambios presione 0)\n",2-jugadas);
-        scanf("%d", &sel);
-        
-        if(sel != 0)
-        {
-            // Validamos que el número esté en el rango [1, 5]
-            while (sel < 1 || sel > 5) 
-            {
-                printf("El numero debe estar en el rango del 1 al 5.\n");
-                printf("Elija un numero del 1 al 5: ");
-                scanf("%d", &sel);
+        exit = 0;
+        while(cant_d <= 5 && !exit){
+            cant_d = 1;
+            printf("\ningrese el numero de letra del dado que desea volver a lanzar \nX para terminar la jugada\n");
+            scanf("%c",&sel);
+            // lee y descarta todos los caracteres en el buffer de entrada hasta que encuentra el carácter de nueva línea
+            while(getchar() != '\n');
+            // Corrovoramos que sea una letra valida sino hacemos que la vuelva a ingresar
+            if (sel != 'A' && sel != 'B' && sel != 'C' && sel != 'D' && sel != 'E'&& sel != 'X') {
+                printf("[ERROR]\nPor favor, ingrese una letra valida.\n");
+                continue;
             }
-            //definimos cuantos dados se volvera a tirar
-            for(int i = 1; i <= sel; i++)
-            {
-                ant = sel_d;
-                printf("elija el numero de dado que desea volver a lanzar del 1 al 5:\n");
-                scanf("%d",&sel_d);
-                
-                if(ant != sel_d)
-                {
-                    dice[sel_d-1] = (rand() % 6) + 1;
-                }
-                //declaramos que no se pueda volver a tirar el dado 2 veces
-                while(ant == sel_d)
-                {
-                    ant = sel_d;
-                    printf("\nAVISO: \nsolo puede elejir 1 dado para volver a lanzar\n\n");
-                    printf("elija el numero de dado que desea volver a lanzar del 1 al 5:\n");
-                    scanf("%d",&sel_d);
-                    
-                    if(ant != sel_d)
-                    {
-                        dice[sel_d-1] = (rand() % 6) + 1;
-                    }
-                }
+            switch(sel) {
+            case 'A':
+                dice[0] = 0;
+                break;
+            case 'B':
+                dice[1] = 0;
+                break;
+            case 'C':
+                dice[2] = 0;
+                break;
+            case 'D':
+                dice[3] = 0;
+                break;
+            case 'E':
+                dice[4] = 0;
+                break;
             }
-            
-            printf("la nueva tirada es:\n");
-            //volvemos a imprimir los dados si se realizaron cambios
-            for(int i = 0; i < 5; i++ )
-            {
-                printf("dado numero[%d] = \n",i+1);
-                printf("%d \n", dice[i]);
+            reval_dice();
+            cant_d++;
+            if(sel == 'X'){
+                exit = 1;
             }
-        }else{
-            printf("no se realizaron cambios en la tirada");
-            break;
         }
-    jugadas = jugadas + 1;
+        jugadas++;
+        printf("\n[la nueva tirada]\n");
+        gen_dice();
+        if(jugadas != 2){
+            printf("\n\nA usted le queda %d Jugadas\n",2-jugadas);
+            printf("si desea continuar presione enter si no presione cualquier otra tecla....\n\n");
+            s = getchar();
+            if(s != '\n'){
+                break;
+            }else{
+                system("cls");
+            }
+        }
     }
     return 0;
 }
 
 int main(){
     val_dice();
-    
-    for(int i = 0; i < 5; i++ )
-    {
-        printf("dado numero[%d] = \n",i+1);
-        efect();
-        printf("\r");
-        printf("%d \n", dice[i]);
-    }
-    
+    gen_dice();
     selec();
 }
