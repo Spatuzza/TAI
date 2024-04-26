@@ -9,10 +9,25 @@ int jugador_2[11] ={0};
 bool serv = true;
 int dice[5] = {0};
 int jugadas;
+int cont[6] = {0};
 
-int _1_6_noserv(){
-    int cont[6] = {0};
+int test(){
+    dice[0] = 2;
+    dice[1] = 2;
+    dice[2] = 3;
+    dice[3] = 3;
+    dice[4] = 1;
+}
+
+int nonserv(){
     if(serv == false){
+        nonserv_1_6();
+        nonservdob();
+    }
+}
+
+int nonserv_1_6(){
+    memset(cont, 0, sizeof(cont));
         for(int i = 0; i<= 4; i++){
             if(dice[i] == 1){
                 cont[0] = cont[0] + 1;
@@ -38,10 +53,30 @@ int _1_6_noserv(){
                 printf("\ntenes un %d , deseas anotarlo?",i+1);
             }
         }
-    }
 }
 
+int nonservdob(){
+    //cont[i] == 2 && flag == 1
+    int dob;
+    int dob_2;
+    int flag = 0;
+    for(int i = 0; i<= 5; i++){
+        if(cont[i] == 2 && flag == 1){
+            dob = i;
+            flag = 2;
+        }
+        if(cont[i] == 2 && flag == 0){
+            dob_2 = i;
+            flag = 1;
+        }
+    }
+    if(flag == 2){
+        printf("\ntenemos doble!");
+    }
+    
+}
 int control_serv(){
+    serv = true;
     for (int i = 0; i < 4; i++){
         if(dice[i] != 0){
             serv = false;
@@ -49,7 +84,6 @@ int control_serv(){
         }
     }
 }
-
 void efect() {
     int i;
     srand(time(NULL));
@@ -128,35 +162,38 @@ int selec(){
             case 'E':
                 dice[4] = 0;
                 break;
-            }
-            control_serv();
-            reval_dice_0();
             cant_d++;
+            }
             if(sel == 'X'){
                 exit = 1;
             }
         }
+        control_serv();
+        reval_dice_0();
         jugadas++;
-        printf("\n[la nueva tirada]\n");
-        gen_dice();
+        //gen_dice();
         if(jugadas != 2){
             printf("\n\nA usted le queda %d Jugadas\n",2-jugadas);
-            printf("si desea continuar presione enter si no presione cualquier otra tecla....\n\n");
+            printf("si desea continuar presione enter si no presione cualquier otra tecla y enter....\n\n");
             s = getchar();
             if(s != '\n'){
                 gen_dice();
                 break;
             }else{
-                system("cls");
+                printf("\n[la nueva tirada]\n");
+                gen_dice();
             }
+        }else{
+            gen_dice();
         }
     }
     return 0;
 }
 
 int main(){
-    val_dice();
+    //val_dice();
+    test();
     gen_dice();
     selec();
-    _1_6_noserv();
+    nonserv();
 }
