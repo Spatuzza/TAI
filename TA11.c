@@ -1,3 +1,10 @@
+/*
+JUEGO ✓
+REGLAS ✓ 
+ANOTADOR X
+IA X
+*/
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,21 +19,15 @@ int jugadas;
 int cont[6] = {0};
 
 int test(){
-    dice[0] = 2;
-    dice[1] = 2;
+    dice[0] = 1;
+    dice[1] = 3;
     dice[2] = 3;
     dice[3] = 3;
-    dice[4] = 1;
+    dice[4] = 3;
 }
 
-int nonserv(){
-    if(serv == false){
-        nonserv_1_6();
-        nonservdob();
-    }
-}
 
-int nonserv_1_6(){
+int _1_6(){
     memset(cont, 0, sizeof(cont));
         for(int i = 0; i<= 4; i++){
             if(dice[i] == 1){
@@ -55,7 +56,7 @@ int nonserv_1_6(){
         }
 }
 
-int nonservdob(){
+int dob(){
     //cont[i] == 2 && flag == 1
     int dob;
     int dob_2;
@@ -65,7 +66,7 @@ int nonservdob(){
             dob = i;
             flag = 2;
         }
-        if(cont[i] == 2 && flag == 0){
+        else if(cont[i] == 2 && flag == 0){
             dob_2 = i;
             flag = 1;
         }
@@ -73,8 +74,90 @@ int nonservdob(){
     if(flag == 2){
         printf("\ntenemos doble!");
     }
-    
 }
+
+int stair_(){
+    int st = false;
+    // escalera normal
+    int p = dice[0];
+    for(int i = 1; i<= 4; i++){
+        if(dice[i] > p){
+            p = dice[i];
+            st = true;
+        }else{
+            st = false;
+            break;
+        }
+    }
+    //escalera a alas
+    if(dice[0] == 3 && dice[1] == 4 && dice[2] == 5 && dice[3] == 6 && dice[4] == 1){
+        st = true;
+    }
+    if(st == true){
+        printf("\ntenemos escalera");
+        return 1;
+    }
+    return 0;
+}
+
+int Full(){
+    int full = 0;
+    int full_2 = 0;
+    int flag = 0;
+    for(int i = 0; i<= 5; i++){
+        if(cont[i] == 3){
+            full = i;
+            flag = flag + 1;
+        }
+        if(cont[i] == 2){
+            full_2 = i;
+            flag = flag + 1;
+        }
+    }
+    if(flag == 2){
+        printf("\ntenemos Full!");
+    }
+}
+
+int poker(){
+    int pok = 0;
+    bool flag = false;
+    for(int i = 0; i<= 5; i++){
+        if(cont[i] == 4){
+            pok = i;
+            flag = true;
+            break;
+        }
+    }
+    if(flag == true){
+        printf("\ntenemos poker!");
+    }
+}
+
+int generala(){
+    int gener ;
+    bool flag = false;
+    for(int i = 0; i<= 5; i++){
+        if(cont[i] == 5){
+            gener = i;
+            flag = true;
+            break;
+        }
+    }
+    if(flag == true){
+        printf("\ntenemos GENERALA!");
+    }
+}
+
+int nonserv(){
+    _1_6();
+    dob();
+    stair_();
+    Full();
+    poker();
+    generala();
+}
+
 int control_serv(){
     serv = true;
     for (int i = 0; i < 4; i++){
@@ -84,6 +167,7 @@ int control_serv(){
         }
     }
 }
+
 void efect() {
     int i;
     srand(time(NULL));
